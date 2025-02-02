@@ -1,26 +1,28 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const API_URL = "https://kioscopiloto-back.onrender.com";
+const API_URL = "https://kioscopiloto-back.onrender.com/api/products";  // Asegúrate de agregar "/api/products"
+
 //const API_URL = "https://kioscopiloto-back.onrender.com"; 
 
 // Acción asíncrona para obtener productos solo si no están en el storeeeeeeeeeeeee
 export const fetchProductos = createAsyncThunk(
   "productos/fetchProductos",
   async (_, { getState, rejectWithValue }) => {
-    const { productos } = getState(); // Obtener el estado global
+    const { productos } = getState();
     if (productos.items.length > 0) {
       console.log("🔵 Productos ya están en el store, no se hace la llamada.");
-      return productos.items; // Si ya hay productos, retornamos los almacenados
+      return productos.items;
     }
     
     try {
       console.log("🔵 Fetching products from:", API_URL);
-      const response = await fetch(API_URL);
+      const response = await fetch(API_URL, { headers: { "Accept": "application/json" } });  // Asegura el formato JSON
       if (!response.ok) throw new Error("Error al obtener productos");
       const data = await response.json();
       console.log("✅ Productos recibidos:", data);
       return data;
     } catch (error) {
+      console.error("❌ Error en fetchProductos:", error);
       return rejectWithValue(error.message);
     }
   }
