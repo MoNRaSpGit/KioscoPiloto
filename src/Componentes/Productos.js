@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductos } from "../Slice/ProductoSlice";
 import { agregarAlCarrito } from "../Slice/carritoSlice";
+import "../Css/Productos.css"; // Importa el CSS
 
 const Productos = () => {
   const dispatch = useDispatch();
@@ -17,46 +18,24 @@ const Productos = () => {
   if (status === "failed") return <p>❌ Error: {error}</p>;
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px", padding: "20px" }}>
+    <div className="productos-container">
       {productos.map((producto) => (
-        <div key={producto.id} style={styles.card}>
-          <img src={producto.image || "https://dummyimage.com/150/ddd/000.png&text=No+Image"} alt={producto.name} style={styles.image} />
+        <div key={producto.id} className="producto-card">
+          <img
+            src={producto.image || "https://dummyimage.com/150/ddd/000.png&text=No+Image"}
+            alt={producto.name}
+            className="producto-imagen"
+          />
           <h3>{producto.name}</h3>
-          <p>{producto.description}</p>
-          <p><strong>${producto.price}</strong></p>
-          <button style={styles.button} onClick={() => dispatch(agregarAlCarrito(producto))}>
+          <p className="producto-descripcion">{producto.description}</p>
+          <p className="producto-precio">${producto.price}</p>
+          <button className="producto-boton" onClick={() => dispatch(agregarAlCarrito(producto))}>
             🛒 Agregar al carrito
           </button>
         </div>
       ))}
     </div>
   );
-};
-
-const styles = {
-  card: {
-    border: "1px solid #ddd",
-    borderRadius: "10px",
-    padding: "15px",
-    textAlign: "center",
-    boxShadow: "2px 2px 10px rgba(0,0,0,0.1)",
-    backgroundColor: "#fff"
-  },
-  image: {
-    width: "100%",
-    height: "150px",
-    objectFit: "cover",
-    borderRadius: "5px"
-  },
-  button: {
-    marginTop: "10px",
-    padding: "8px 12px",
-    border: "none",
-    backgroundColor: "#007bff",
-    color: "#fff",
-    cursor: "pointer",
-    borderRadius: "5px",
-  }
 };
 
 export default Productos;

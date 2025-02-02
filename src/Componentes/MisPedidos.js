@@ -1,44 +1,46 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import "../Css/MisPedidos.css"; // Importa el CSS
 
 const MisPedidos = () => {
   const { pedidos } = useSelector((state) => state.pedidos);
 
-  const getColorEstado = (estado) => {
+  const getEstadoClase = (estado) => {
     switch (estado) {
       case "Pendiente":
-        return "#8B0000"; // Rojo oscuro
+        return "estado-pendiente";
       case "Procesando":
-        return "#DAA520"; // Amarillo oscuro
+        return "estado-procesando";
       case "Listo":
-        return "#006400"; // Verde oscuro
+        return "estado-listo";
       default:
-        return "#000"; // Negro por defecto
+        return "";
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>📦 Mis Pedidos</h2>
+    <div className="mis-pedidos-container">
+      <h2 className="mis-pedidos-title">📦 Mis Pedidos</h2>
       {pedidos.length === 0 ? (
-        <p>No hay pedidos realizados aún.</p>
+        <p className="mis-pedidos-vacio">No hay pedidos realizados aún.</p>
       ) : (
         pedidos.map((pedido) => (
-          <div key={pedido.id} style={styles.pedidoCard}>
+          <div key={pedido.id} className="pedido-card">
             <h3>Pedido #{pedido.id}</h3>
-            <p>📅 Fecha: {pedido.fecha}</p>
-            <ul>
+            <p className="pedido-fecha">📅 Fecha: {pedido.fecha}</p>
+            <ul className="pedido-lista">
               {pedido.productos.map((producto) => (
-                <li key={producto.id} style={styles.productoItem}>
-                  <img src={producto.image || "https://dummyimage.com/100/ddd/000.png&text=No+Image"} alt={producto.name} style={styles.image} />
+                <li key={producto.id} className="pedido-producto">
+                  <img
+                    src={producto.image || "https://dummyimage.com/100/ddd/000.png&text=No+Image"}
+                    alt={producto.name}
+                    className="pedido-imagen"
+                  />
                   <span>{producto.name} - ${producto.price} x {producto.cantidad}</span>
                 </li>
               ))}
             </ul>
-            <button
-              style={{ ...styles.estadoButton, backgroundColor: getColorEstado(pedido.estado) }}
-              disabled // Botón deshabilitado para no permitir cambios
-            >
+            <button className={`estado-button ${getEstadoClase(pedido.estado)}`} disabled>
               Estado: {pedido.estado}
             </button>
           </div>
@@ -46,36 +48,6 @@ const MisPedidos = () => {
       )}
     </div>
   );
-};
-
-const styles = {
-  pedidoCard: {
-    border: "1px solid #ddd",
-    borderRadius: "10px",
-    padding: "15px",
-    marginBottom: "20px",
-    backgroundColor: "#f9f9f9"
-  },
-  productoItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    paddingBottom: "5px",
-  },
-  image: {
-    width: "50px",
-    height: "50px",
-    objectFit: "cover",
-    borderRadius: "5px"
-  },
-  estadoButton: {
-    marginTop: "10px",
-    padding: "8px 12px",
-    border: "none",
-    color: "#fff",
-    cursor: "not-allowed",
-    borderRadius: "5px",
-  }
 };
 
 export default MisPedidos;
