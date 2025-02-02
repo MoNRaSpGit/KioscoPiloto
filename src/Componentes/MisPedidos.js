@@ -1,51 +1,38 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import "../Css/MisPedidos.css"; // Importa el CSS
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPedidos } from "../Slice/PedidosSlice";
+import socket from "../Componentes/Socket";
 
 const MisPedidos = () => {
+  const dispatch = useDispatch();
   const { pedidos } = useSelector((state) => state.pedidos);
 
-  const getEstadoClase = (estado) => {
-    switch (estado) {
-      case "Pendiente":
-        return "estado-pendiente";
-      case "Procesando":
-        return "estado-procesando";
-      case "Listo":
-        return "estado-listo";
-      default:
-        return "";
-    }
-  };
+  useEffect(() => {
+    dispatch(fetchPedidos());
+
+    socket.on("new_order", (newOrder) => {
+      console.log("🆕 Nuevo pedido recibido:", newOrder);
+      dispatch({ type: "pedidos/agregarPedido", payload: newOrder });
+    });
+
+    return () => {
+      socket.off("new_order");
+    };
+  }, [dispatch]);
 
   return (
     <div className="mis-pedidos-container">
-      <h2 className="mis-pedidos-title">📦 Mis Pedidos</h2>
-      {pedidos.length === 0 ? (
-        <p className="mis-pedidos-vacio">No hay pedidos realizados aún.</p>
-      ) : (
-        pedidos.map((pedido) => (
-          <div key={pedido.id} className="pedido-card">
-            <h3>Pedido #{pedido.id}</h3>
-            <p className="pedido-fecha">📅 Fecha: {pedido.fecha}</p>
-            <ul className="pedido-lista">
-              {pedido.productos.map((producto) => (
-                <li key={producto.id} className="pedido-producto">
-                  <img
-                    src={producto.image || "https://dummyimage.com/100/ddd/000.png&text=No+Image"}
-                    alt={producto.name}
-                    className="pedido-imagen"
-                  />
-                  <span>{producto.name} - ${producto.price} x {producto.cantidad}</span>
-                </li>
-              ))}
-            </ul>
-            <button className={`estado-button ${getEstadoClase(pedido.estado)}`} disabled>
-              Estado: {pedido.estado}
-            </button>
-          </div>
-        ))
-      )}
+      <h2>📦 Mis Pedidos</h2>
+      {pedidos.length === 0 ? <p>No hay pedidos aún.</p> : pedidos.map((pedido) => (
+        <div key={pedido.id} className="pedido-card">
+          <h3>Pedido #{pedido.id}</h3>
+          <p>📅 Fecha: {pedido.created_at}</p>
+          <p>Estado: {pedido.status}</p>
+          <ul>{pedido.products.map((producto) => (
+            <li key={producto.id}>{producto.name} - ${producto.price} x {producto.quantity}</li>
+          ))}</ul>
+        </div>
+      ))}
     </div>
   );
 };

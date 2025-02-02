@@ -1,18 +1,42 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { removerDelCarrito, vaciarCarrito } from "../Slice/carritoSlice";
-import { agregarPedido } from "../Slice/PedidosSlice";
-import "../Css/Carrito.css"; // Importa el archivo CSS
+import { vaciarCarrito,removerDelCarrito } from "../Slice/carritoSlice";
+import { realizarPedido, agregarPedido } from "../Slice/PedidosSlice";
+import socket from "../Componentes/Socket";
+import "../Css/Carrito.css";
 
 const Carrito = () => {
   const dispatch = useDispatch();
   const { items: carrito } = useSelector((state) => state.carrito);
 
-  const handleComprar = () => {
+  const handleComprar = async () => {
     if (carrito.length > 0) {
-      dispatch(agregarPedido(carrito)); // Agrega los productos con estado "Pendiente"
-      dispatch(vaciarCarrito()); // Vacía el carrito después de la compra
-      alert("✅ Pedido realizado con éxito!");
+      const nuevoPedido = {
+        userId: 1, // ⚠️ Simulación de usuario
+        products: carrito.map((producto) => ({
+          id: producto.id,
+          quantity: producto.cantidad || 1,
+          price: producto.price,
+        })),
+      };
+
+      console.log("📤 [handleComprar] Enviando pedido:", nuevoPedido);
+
+      dispatch(realizarPedido(nuevoPedido))
+        .unwrap()
+        .then((savedOrder) => {
+          console.log("✅ [handleComprar] Pedido guardado en BDD, actualizando store global...");
+          
+          dispatch(agregarPedido(savedOrder));
+          socket.emit("new_order", savedOrder);
+          
+          dispatch(vaciarCarrito());
+          alert("✅ Pedido realizado con éxito!");
+        })
+        .catch((error) => {
+          console.error("❌ [handleComprar] Error al realizar el pedido:", error);
+          alert("❌ Hubo un problema al procesar el pedido.");
+        });
     } else {
       alert("⚠️ El carrito está vacío.");
     }
@@ -20,7 +44,7 @@ const Carrito = () => {
 
   return (
     <div className="carrito-container">
-      <h2 className="carrito-title">🛒 Carrito de Compras</h2>
+      <h2>🛒 Carrito</h2>
       {carrito.length === 0 ? (
         <p className="carrito-vacio">El carrito está vacío.</p>
       ) : (
@@ -28,11 +52,7 @@ const Carrito = () => {
           <ul className="carrito-lista">
             {carrito.map((item) => (
               <li key={item.id} className="carrito-item">
-                <img
-                  src={item.image || "https://dummyimage.com/100/ddd/000.png&text=No+Image"}
-                  alt={item.name}
-                  className="carrito-imagen"
-                />
+                <img src={item.image || "https://dummyimage.com/100/ddd/000.png&text=No+Image"} alt={item.name} className="carrito-imagen" />
                 <div className="carrito-info">
                   <h4>{item.name}</h4>
                   <p>Precio: ${item.price}</p>

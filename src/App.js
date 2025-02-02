@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchProductos } from "../src/Slice/ProductoSlice";
+import { fetchPedidos } from "../src/Slice/PedidosSlice";
 import Productos from "./Componentes/Productos";
 import Carrito from "./Componentes/Carrito";
 import Pedidos from "./Componentes/Pedidos";
 import MisPedidos from "./Componentes/MisPedidos";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchProductos()); // Cargar productos al iniciar la app
+    dispatch(fetchPedidos());   // Cargar pedidos al iniciar la app
+  }, [dispatch]);
+
   return (
     <Router>
       <nav style={styles.navbar}>
@@ -24,7 +34,6 @@ function App() {
     </Router>
   );
 }
-
 
 const styles = {
   navbar: {
