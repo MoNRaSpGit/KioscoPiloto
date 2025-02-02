@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/KioscoPiloto/static/css/main.dc87fb2c.css",
-    "main.js": "/KioscoPiloto/static/js/main.07cd81a9.js",
+    "main.js": "/KioscoPiloto/static/js/main.6ecdf4f7.js",
     "index.html": "/KioscoPiloto/index.html",
     "main.dc87fb2c.css.map": "/KioscoPiloto/static/css/main.dc87fb2c.css.map",
-    "main.07cd81a9.js.map": "/KioscoPiloto/static/js/main.07cd81a9.js.map"
+    "main.6ecdf4f7.js.map": "/KioscoPiloto/static/js/main.6ecdf4f7.js.map"
   },
   "entrypoints": [
     "static/css/main.dc87fb2c.css",
-    "static/js/main.07cd81a9.js"
+    "static/js/main.6ecdf4f7.js"
   ]
 }
