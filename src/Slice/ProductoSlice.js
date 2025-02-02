@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const API_URL = "http://localhost:3001/api/products";
+const API_URL = "https://kioscopiloto-back.onrender.com";
+//const API_URL = "https://kioscopiloto-back.onrender.com"; 
 
 // Acción asíncrona para obtener productos solo si no están en el store
 export const fetchProductos = createAsyncThunk(
