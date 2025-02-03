@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import socket from "../Componentes/Socket"; 
 
-const API_URL = "http://localhost:3001/api/orders"; 
+//const API_URL = "http://localhost:3001/api/orders"; 
+const API_URL = "https://kioscopiloto-back.onrender.com/api/orders"; 
 
 // ✅ Obtener pedidos desde la BDD
 export const fetchPedidos = createAsyncThunk("pedidos/fetchPedidos", async (_, { rejectWithValue }) => {
