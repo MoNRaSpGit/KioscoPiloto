@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 //const API_URL = "http://localhost:3001/api/products"; // 🔴 URL correcta
-const API_URL = "https://kioscopiloto-back.onrender.com/products"; // 🔴 URL correcta
+const API_URL = "https://kioscopiloto-back.onrender.com/api/products"; // 🔴 URL correcta
 
 // ✅ Obtener productos desde la BDD
 export const fetchProductos = createAsyncThunk("productos/fetchProductos", async () => {
